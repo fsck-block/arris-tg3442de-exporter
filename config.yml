@@ -1,0 +1,17 @@
+# TG3442DE IP address
+ip_address: 192.168.0.1
+
+# TG3442DE web interface password
+password: WhatEverYourPasswordIs
+
+# All following parameters are optional.
+exporter:
+  # port on which this exporter exposes metrics (default: 9706)
+  #port: 9706
+
+  # timeout duration for connections to the TG3442DE (default: 9)
+  #timeout_seconds: 9
+
+  # Customize the family of metrics to scrape. By default, all metrics are scraped.
+  #metrics: [device_status, docsis_status, overview_status ]
+

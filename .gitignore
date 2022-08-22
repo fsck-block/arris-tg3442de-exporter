@@ -1,0 +1,25 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Translations
+*.mo
+*.pot
+
+# pyenv
+.python-version
+
+# dotenv
+.env
+
+# virtualenv
+venv/
+ENV/
+
+# Specific
+data/
+simulate/
+*.sh
+*.service
+*.local
