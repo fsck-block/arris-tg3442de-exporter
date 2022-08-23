@@ -6,7 +6,6 @@ import json
 import re
 import requests
 import sys
-import os
 
 class TG3442DE():
     def __init__(self,logger, address, key, timeout,simulate=False):
@@ -29,13 +28,13 @@ class TG3442DE():
             # get login page
             r = self.session.get(f"{self.url}",timeout=self.timeout)
             # parse HTML
-            h = BeautifulSoup(r.text, "lxml")
+            html = BeautifulSoup(r.text, "html.parser")
             # get session id from javascript in head
-            current_session_id = re.search(r".*var currentSessionId = '(.+)';.*", h.head.text)[1]
+            current_session_id = re.search(r".*var currentSessionId = '(.+)';.*", html.head.text)[1]
 
             # encrypt password
-            iv = re.search(r".*var myIv = '(.+)';.*",h.head.text)[1]
-            salt = re.search(r".*var mySalt = '(.+)';.*",h.head.text)[1]
+            iv = re.search(r".*var myIv = '(.+)';.*",html.head.text)[1]
+            salt = re.search(r".*var mySalt = '(.+)';.*",html.head.text)[1]
             key = hashlib.pbkdf2_hmac(
                 'sha256',
                 bytes(self.password.encode("ascii")),

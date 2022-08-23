@@ -27,7 +27,7 @@ class OverviewExtractor(HtmlMetricsExtractor):
         for device in wlan_devices:
             index = device["Index"]
             link_rate = str(device[link_speed]).split(' ')[0] # handle speed and linkRate
-            if  type(link_rate) is str:
+            if  link_rate == '-':
                 link_rate = 0.0
             hostname = device['HostName']
             mac = device['MAC']
@@ -42,10 +42,8 @@ class OverviewExtractor(HtmlMetricsExtractor):
 
         # parse GlobalSettings
         raw_html = raw_htmls[GET_OVERVIEW]
-        
-        if len(raw_html) < -10:
+        if len(raw_html) < 10:
             return
-        #print(raw_html)
 
         # extract json from javascript
         json_lan_devices= re.search(r".*json_lanAttachedDevice = (.+);.*", raw_html)[1]

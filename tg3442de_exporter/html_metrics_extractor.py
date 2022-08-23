@@ -1,8 +1,6 @@
 
 import re
-from datetime import timedelta
 from logging import Logger
-from pathlib import Path
 from typing import Iterable, Set, Dict
 
 from prometheus_client import Metric
@@ -16,10 +14,10 @@ class HtmlMetricsExtractor:
         self._logger.debug("name :" + name)
 
         # create one parser per function
-        self._parsers = {}
+        self._pages = {}
         for page in pages:
             self._logger.debug("Page :" +page)
-            self._parsers[page] = page
+            self._pages[page] = page
 
     @property
     def name(self):
@@ -36,15 +34,15 @@ class HtmlMetricsExtractor:
         TG3442 pages(s) this metrics extractor is working on
         :return:
         """
-        self._logger.debug("HtmlMetricsExtractor " + str(self._parsers.keys()))
-        return self._parsers.keys()
+        self._logger.debug("HtmlMetricsExtractor " + str(self._pages.keys()))
+        return self._pages.keys()
 
     def extract(self, raw_htls: Dict[str, bytes]) -> Iterable[Metric]:
         """
-        Returns metrics given raw XML responses corresponding to the functions returned in the `functions` property.
+        Returns metrics given raw HTML responses corresponding to the pages returned in the `pages` property.
         :param raw_htmls:
         :return: metrics iterable
-        :raises: lxml.etree.XMLSyntaxError in case a raw XML does not match the expected schema
+        :raises: NotImplementedError
         """
         self._logger.debug("HtmlMetricsExtractor")
         raise NotImplementedError

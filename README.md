@@ -54,11 +54,11 @@ One scrape takes roughly 4 seconds.
 | `tg3442de_device_info`                 | Assorted device information                    |
 | `tg3442de_uptime_seconds`              | Device uptime in seconds                       |
 | `tg3442de_device_status`               | Assorted device status inforation              |
-| `tg3442de_downstream_frequency_hz`     | Downstream channel frequency                   |
+| `tg3442de_downstream_frequency_MHz`    | Downstream channel frequency                   |
 | `tg3442de_downstream_power_level_dbmV` | Downstream channel power level                 |
 | `tg3442de_downstream_snr_db`           | Downstream channel signal-to-noise ratio (SNR) |
 | `tg3442de_downstream_locked`           | Downstream channel locking status              |
-| `tg3442de_upstream_frequency_hz`       | Upstream channel frequency                     |
+| `tg3442de_upstream_frequency_MHz`      | Upstream channel frequency                     |
 | `tg3442de_upstream_power_level_dbmV`   | Upstream channel power level                   |
 | `tg3442de_upstream_locked`             | Upstream channel locking status                |
 | `tg3442de_lan_host_nums`               | Number of LAN hosts                            |

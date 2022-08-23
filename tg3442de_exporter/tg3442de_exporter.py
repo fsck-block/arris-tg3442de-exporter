@@ -123,7 +123,7 @@ class TG3442DECollector(object):
                     stack = traceback.format_exc()
                     message = f"Failed to extract '{extractor.name}'. raw_htmls:\n{stack}\n{raw_htmls}"                    
                     self.logger.error(message)
-                except (ConnectionError, Timeout) as e:
+                except (BrokenPipeError,ConnectionError, Timeout) as e:
                     # in case of serious connection issues, abort and do not try the next extractor
                     self.logger.error(repr(e))
                     break

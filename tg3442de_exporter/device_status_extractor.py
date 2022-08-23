@@ -28,10 +28,8 @@ class DeviceStatusExtractor(HtmlMetricsExtractor):
 
         # parse GlobalSettings
         raw_html = raw_htmls[GET_STATUS_STATUS]
-        
-        if len(raw_html) < -10:
+        if len(raw_html) < 10:
             return
-        #print(raw_html)
 
         #var js_SerialNumber = 'XXXXXXXXXXX';
         serial_number = self.re_search(r".*var js_SerialNumber = '(.*)';.*",raw_html,1)[0]
