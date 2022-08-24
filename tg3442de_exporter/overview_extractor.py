@@ -26,9 +26,14 @@ class OverviewExtractor(HtmlMetricsExtractor):
     def add_devices(self,wlan_devices, metric : GaugeMetricFamily,link_speed):
         for device in wlan_devices:
             index = device["Index"]
-            link_rate = str(device[link_speed]).split(' ')[0] # handle speed and linkRate
+            # handle speed and linkRate
+            values = str(device[link_speed]).split(' ')
+            link_rate = values[0]
             if  link_rate == '-':
                 link_rate = 0.0
+            if len(values) == 2:
+                if values[1] == 'Gbps':
+                    link_rate = float(link_rate) * 1000
             hostname = device['HostName']
             mac = device['MAC']
             ipV4 = device['IPv4']
