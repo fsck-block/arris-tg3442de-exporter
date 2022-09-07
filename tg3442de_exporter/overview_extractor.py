@@ -8,16 +8,14 @@ from tg3442de_exporter.html_metrics_extractor import HtmlMetricsExtractor
 from prometheus_client import Metric
 from prometheus_client.metrics_core import (
     InfoMetricFamily,
-    CounterMetricFamily,
     GaugeMetricFamily,
-    StateSetMetricFamily,
 )
 OVERVIEW_STATUS = 'overview_status'
 
 GET_OVERVIEW      = '/php/overview_data.php'
 
 class OverviewExtractor(HtmlMetricsExtractor):
-    def __init__(self, logger: Logger):
+    def __init__(self, logger: Logger, exporter_config: Dict):
         super(OverviewExtractor, self).__init__(
             OVERVIEW_STATUS, {GET_OVERVIEW}, logger
         )

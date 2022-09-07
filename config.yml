@@ -9,9 +9,16 @@ exporter:
   # port on which this exporter exposes metrics (default: 9706)
   #port: 9706
 
+  # filename to store call log
+  # call_log_filename : 'tg3442de_call_log.json'
+
+  # filename to store event log
+  # event_log_filename : 'tg3442de_event_log.json'
+
   # timeout duration for connections to the TG3442DE (default: 9)
   #timeout_seconds: 9
 
-  # Customize the family of metrics to scrape. By default, all metrics are scraped.
-  #metrics: [device_status, docsis_status, overview_status ]
+  # Customize the family of metrics to scrape. By default, the 
+  # log-metrics (call_log_local and event_log_local) are not scraped.
+  #metrics: [device_status, docsis_status, overview_status, phone_status, call_log_local, event_log_local ]
 

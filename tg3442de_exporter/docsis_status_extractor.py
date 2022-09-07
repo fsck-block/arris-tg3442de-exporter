@@ -9,10 +9,7 @@ from tg3442de_exporter.html_metrics_extractor import HtmlMetricsExtractor
 
 from prometheus_client import Metric
 from prometheus_client.metrics_core import (
-    InfoMetricFamily,
-    CounterMetricFamily,
     GaugeMetricFamily,
-    StateSetMetricFamily,
 )
 
 DOCSIS_STATUS   = 'docsis_status'
@@ -42,7 +39,7 @@ class LockStatus(Enum):
     UNLOCKED = False
 
 class DocsisStatusExtractor(HtmlMetricsExtractor):
-    def __init__(self, logger: Logger):
+    def __init__(self, logger: Logger, exporter_config: Dict):
         super(DocsisStatusExtractor, self).__init__(
             DOCSIS_STATUS, {GET_STATUS_DOCSIS}, logger
         )

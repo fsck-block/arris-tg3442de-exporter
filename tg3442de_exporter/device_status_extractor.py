@@ -6,9 +6,7 @@ from tg3442de_exporter.html_metrics_extractor import HtmlMetricsExtractor
 from prometheus_client import Metric
 from prometheus_client.metrics_core import (
     InfoMetricFamily,
-    CounterMetricFamily,
     GaugeMetricFamily,
-    StateSetMetricFamily,
 )
 
 
@@ -17,7 +15,7 @@ GET_STATUS_STATUS = '/php/status_status_data.php'
 
 
 class DeviceStatusExtractor(HtmlMetricsExtractor):
-    def __init__(self, logger: Logger):
+    def __init__(self, logger: Logger, exporter_config: Dict):
         super(DeviceStatusExtractor, self).__init__(
             DEVICE_STATUS, {GET_STATUS_STATUS}, logger
         )

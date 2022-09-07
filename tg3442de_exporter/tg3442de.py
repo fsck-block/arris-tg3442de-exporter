@@ -120,7 +120,7 @@ class TG3442DE():
                 if int(r.status_code) == 200:
                     result = r.text
         else:
-            partname = page[5:-4]
+            partname = page[5:page.find('.php')]
             filename = f"simulate/{partname}.txt"
             try:
                 with open(filename) as f:

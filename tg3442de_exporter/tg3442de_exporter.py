@@ -10,7 +10,6 @@ tg3442de_exporter Prometheus Plugin to monitor status of Arris TG3442DE
 
 '''
 
-import json
 import logging
 import threading
 import time
@@ -37,10 +36,6 @@ from tg3442de_exporter.config import (
     SIMULATE
 )
 
-
-'''
-from connectbox_exporter.logger import get_logger, VerboseLogger
-'''
 from tg3442de_exporter.html2metric import get_metrics_extractor
 
 # Taken 1:1 from prometheus-client==0.7.1, see https://github.com/prometheus/client_python/blob/3cb4c9247f3f08dfbe650b6bdf1f53aa5f6683c1/prometheus_client/exposition.py
@@ -69,8 +64,7 @@ class TG3442DECollector(object):
         self.simulate = (exporter_config[SIMULATE] == 1)
 
         extractors = exporter_config[EXTRACTORS]
-        self.metric_extractors = [get_metrics_extractor(e, logger) for e in extractors]
-        #self.logger.debug("TG3442DECollector metric_extractors ="+str(self.metric_extractors))
+        self.metric_extractors = [get_metrics_extractor(e, logger,exporter_config) for e in extractors]
 
     def collect(self):
         # Collect scrape duration and scrape success for each extractor. Scrape success is initialized with False for
@@ -95,7 +89,7 @@ class TG3442DECollector(object):
         # skip extracting further metrics if login failed
         if box is not None:
             for extractor in self.metric_extractors:
-                self.logger.debug("extractor ="+str(extractor))
+                #self.logger.debug("extractor ="+str(extractor))
                 raw_htmls = {}
                 try:
                     pre_scrape_time = time.time()
@@ -123,18 +117,18 @@ class TG3442DECollector(object):
                     stack = traceback.format_exc()
                     message = f"Failed to extract '{extractor.name}'. raw_htmls:\n{stack}\n{raw_htmls}"                    
                     self.logger.error(message)
-                except (BrokenPipeError,ConnectionError, Timeout) as e:
+                except Exception as e:
                     # in case of serious connection issues, abort and do not try the next extractor
-                    self.logger.error(repr(e))
+                    stack = traceback.format_exc()
+                    message = f"Failed to extract '{extractor.name}'. raw_htmls:\n{stack}\n{raw_htmls}"                    
+                    self.logger.error(message)
                     break
-
-
 
             # attempt logout once done
             try:
                 box.logout()
             except Exception as e:
-                self.logger.error(e)
+                self.logger.error(repr(e))
                 login_logout_success = False
         scrape_success["login_logout"] = int(login_logout_success)
 
