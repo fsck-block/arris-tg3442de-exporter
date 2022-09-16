@@ -29,6 +29,7 @@ class ChannelModulation(Enum):
     QAM1024 = '1024QAM'
     QAM256  = '256QAM'
     QAM64   = '64QAM'
+    QAM16   = '16QAM'
     QPSK    = 'QPSK'
 
     # default case for all future unknown channel modulation

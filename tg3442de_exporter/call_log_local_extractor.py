@@ -66,16 +66,17 @@ class CallLogLocalExtractor(HtmlMetricsExtractor):
             self.logger.info("Cannot read old call_log :" +str(e))
 
         # merge entries
-        no_entries_added = len(old_log_entries)
+        no_old_entries = len(old_log_entries)
         old_log_entries.update(log_entries)
+        no_entries_added = len(old_log_entries) - no_old_entries
           
-        # save call log
-        try:
-            with open(self.call_log_filename,'w') as out_file: 
-                json.dump(old_log_entries, out_file, indent=1, sort_keys=True)
-        except IOError as e:
-            self.logger.error("Cannot write new call_log :" + str(e))
-        no_entries_added = len(old_log_entries) - no_entries_added
+        # save call log if new entries added
+        if no_entries_added > 0:
+            try:
+                with open(self.call_log_filename,'w') as out_file: 
+                    json.dump(old_log_entries, out_file, indent=1, sort_keys=True)
+            except IOError as e:
+                self.logger.error("Cannot write new call_log :" + str(e))
 
         # Report number of entries added to the local file
         yield GaugeMetricFamily(
