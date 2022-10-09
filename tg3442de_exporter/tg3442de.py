@@ -1,5 +1,4 @@
 import binascii
-from bs4 import BeautifulSoup
 from Crypto.Cipher import AES
 import hashlib
 import json
@@ -28,13 +27,12 @@ class TG3442DE():
             # get login page
             r = self.session.get(f"{self.url}",timeout=self.timeout)
             # parse HTML
-            html = BeautifulSoup(r.text, "html.parser")
             # get session id from javascript in head
-            current_session_id = re.search(r".*var currentSessionId = '(.+)';.*", html.head.text)[1]
+            current_session_id = re.search(r".*var currentSessionId = '(.+)';.*", r.text)[1]
 
             # encrypt password
-            iv = re.search(r".*var myIv = '(.+)';.*",html.head.text)[1]
-            salt = re.search(r".*var mySalt = '(.+)';.*",html.head.text)[1]
+            iv = re.search(r".*var myIv = '(.+)';.*",r.text)[1]
+            salt = re.search(r".*var mySalt = '(.+)';.*",r.text)[1]
             key = hashlib.pbkdf2_hmac(
                 'sha256',
                 bytes(self.password.encode("ascii")),
@@ -73,12 +71,12 @@ class TG3442DE():
             )
 
             # parse result
-            result = json.loads(r.text)
-
             # success?
-            if result['p_status'] != "AdminMatch":
-                self.logger.info("login failure", file=sys.stderr)
+            if r.text.find("AdminMatch") == -1:
+                self.logger.info("login failure")
                 return
+
+            result = json.loads(r.text)
 
             # remember CSRF nonce
             encryptData = result['encryptData']
