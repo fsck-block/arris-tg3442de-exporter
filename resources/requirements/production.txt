@@ -3,3 +3,4 @@ deepmerge==0.2.1
 prometheus-client==0.9.0
 ruamel.yaml==0.16.13
 pycryptodome==3.14.1
+requests==2.25.1

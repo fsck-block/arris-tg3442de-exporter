@@ -12,7 +12,41 @@ Metrics "call_log_local" and "event_log_local" are experimental and at least "ev
 takes a bit too long to be scraped every minute.
 
 ## Installation
-Simply copy code to target directory 
+Simply clone git repository (copy code to target directory) and install the required packages
+```sh-session
+$ git clone https://github.com/fsck-block/arris-tg3442de-exporter.git
+$ cd arris-tg3442de-exporter/
+$ pip3 install -r requirements.txt 
+```
+
+## Usage
+Start the exporter by running the provied start script `run.py` 
+```sh-session
+$ python3 run.py path/to/your/config.yml 
+```
+
+## Usage as service 
+arris-tg3442de-exporter can be run as service. This is an example of my service definition file `tg3442de_exporter_service.service`
+
+```
+[Unit]
+# Human readable name of the unit
+Description=Arris TG3442DE Prometheus Exporter Service
+
+[Service]
+# Command to execute when the service is started
+WorkingDirectory=/home/pi/program/arris-tg3442de-exporter
+ExecStart=/usr/bin/python3 /home/pi/program/arris-tg3442de-exporter/run.py config.yml
+
+SyslogIdentifier=tg3442de_exporter
+StandardOutput=syslog
+StandardError=syslog
+
+Environment=PYTHONUNBUFFERED=1
+
+[Install]
+WantedBy=default.target
+```
 
 ## Configuration
 This exporter queries exactly one TG3442DE cable router as a remote target.
@@ -44,11 +78,6 @@ exporter:
   # log-metrics (call_log_local and event_log_local) are not scraped.
   #metrics: [device_status, docsis_status, overview_status, phone_status, call_log_local, event_log_local ]
 
-```
-
-## Usage
-```sh-session
-$ python3 tg3442de_exporter path/to/your/config.yml 
 ```
 
 ## Prometheus Configuration
