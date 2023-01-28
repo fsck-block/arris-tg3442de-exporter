@@ -6,6 +6,8 @@ password: WhatEverYourPasswordIs
 
 # All following parameters are optional.
 exporter:
+  do_not_remove_this_line:
+
   # port on which this exporter exposes metrics (default: 9706)
   #port: 9706
 
