@@ -79,8 +79,8 @@ class TG3442DE():
             except ValueError:
                 result = {}
             if 'encryptData' not in result:
-                self.logger.info(f"login failure: HTTP {r.status_code}, p_status={result.get('p_status')!r}")
-                return
+                # raise so the scrape reports the failure instead of exporting empty pages as success
+                raise ValueError(f"login failure: HTTP {r.status_code}, p_status={result.get('p_status')!r}")
             self.logger.debug(f"login ok: p_status={result.get('p_status')!r}")
 
             # remember CSRF nonce
@@ -122,9 +122,9 @@ class TG3442DE():
         result = ''
         if self.simulate == False:
             r = self.session.get(f"{self.url}{page}",timeout=self.timeout)
-            if r != None:
-                if int(r.status_code) == 200:
-                    result = r.text
+            if int(r.status_code) != 200:
+                raise ValueError(f"HTTP {r.status_code} for {page}")
+            result = r.text
         else:
             partname = page[5:page.find('.php')]
             filename = f"simulate/{partname}.txt"

@@ -22,7 +22,7 @@ import logging
 import click
 from prometheus_client import CollectorRegistry, MetricsHandler
 from prometheus_client.metrics_core import GaugeMetricFamily
-from requests import Timeout
+from requests import RequestException, Timeout
 
 from tg3442de_exporter.tg3442de import TG3442DE
 from tg3442de_exporter.config import (
@@ -71,17 +71,18 @@ class TG3442DECollector(object):
         # all extractors so that we can report a value for each extractor even in cases where we abort midway through
         # because we lost connection to the modem.
         scrape_duration = {}  # type: Dict[str, float]
-        scrape_success = {}
+        scrape_success = {extractor.name: False for extractor in self.metric_extractors}
         self.logger.info("Collecting from " + self.ip_address)
 
-        # attempt login
+        # attempt login; RequestException covers the box being unreachable (e.g. while it reboots),
+        # TypeError a login page without the expected crypto variables
         login_logout_success = True
         try:
             box = TG3442DE(
                 self.logger, self.ip_address, key=self.password, timeout=self.timeout, simulate=self.simulate
             )
             box.login()
-        except (ConnectionError, Timeout, ValueError) as e:
+        except (ConnectionError, RequestException, Timeout, TypeError, ValueError) as e:
             self.logger.error(repr(e))
             box = None
             login_logout_success = False
@@ -108,7 +109,8 @@ class TG3442DECollector(object):
                     scrape_duration[extractor.name] = post_scrape_time - pre_scrape_time
                     scrape_success[extractor.name] = True
 
-                except (ValueError, KeyError, AssertionError) as e:
+                # TypeError: a regex found nothing in a page whose layout changed; skip just this extractor
+                except (ValueError, KeyError, AssertionError, TypeError) as e:
                     stack = traceback.format_exc()
                     message = f"Failed to extract '{extractor.name}'. \n{stack}"
                     self.logger.error(message)
