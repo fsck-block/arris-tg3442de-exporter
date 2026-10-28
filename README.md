@@ -64,6 +64,9 @@ password: WhatEverYourPasswordIs
 exporter:
   do_not_remove_this_line:
 
+  # address to serve metrics on (default: "", all interfaces); 127.0.0.1 keeps them local
+  #listen_address: ""
+
   # port on which this exporter exposes metrics (default: 9706)
   #port: 9706
 

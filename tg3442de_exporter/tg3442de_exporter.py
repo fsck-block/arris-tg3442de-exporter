@@ -30,6 +30,7 @@ from tg3442de_exporter.config import (
     IP_ADDRESS,
     PASSWORD,
     EXPORTER,
+    LISTEN_ADDRESS,
     PORT,
     TIMEOUT_SECONDS,
     EXTRACTORS,
@@ -188,7 +189,7 @@ def main(config_file='config.yml', debug=False):
 
     # start http server
     CustomMetricsHandler = MetricsHandler.factory(reg)
-    httpd = _ThreadingSimpleServer(("", exporter_config[PORT]), CustomMetricsHandler)
+    httpd = _ThreadingSimpleServer((exporter_config[LISTEN_ADDRESS], exporter_config[PORT]), CustomMetricsHandler)
     httpd_thread = threading.Thread(target=httpd.serve_forever)
     httpd_thread.start()
 
