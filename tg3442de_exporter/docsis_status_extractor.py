@@ -28,10 +28,13 @@ class ChannelModulation(Enum):
     QAM4096 = '4096QAM'
     QAM2048 = '2048QAM'
     QAM1024 = '1024QAM'
+    QAM512  = '512QAM'
     QAM256  = '256QAM'
     QAM128  = '128QAM'
     QAM64   = '64QAM'
+    QAM32   = '32QAM'
     QAM16   = '16QAM'
+    QAM8    = '8QAM'
     QPSK    = 'QPSK'
 
     # default case for all future unknown channel modulation
@@ -60,7 +63,7 @@ class DocsisStatusExtractor(HtmlMetricsExtractor):
         try:
             enum_channel_type = ChannelType(channel_type)
         except ValueError:
-            self._logger.warning(f"Unknown channel modulation '{channel_type}'.")
+            self._logger.warning(f"Unknown channel type '{channel_type}'.")
             enum_channel_type = ChannelType.UNKNOWN
 
         return enum_channel_type.value

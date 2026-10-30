@@ -1,5 +1,5 @@
 # ARRIS TG3442DE Exporter
-A [Prometheus](https://prometheus.io/) exporter for monitoring ARRIS TG3442DE cable modems (Firmware AR01.04.046.17_060822_7244.SIP.10.X1). These are sold under the name "Vodafone Station" by Vodafone in Germany
+A [Prometheus](https://prometheus.io/) exporter for monitoring ARRIS TG3442DE cable modems (Firmware AR01.04.046.17_060822_7244.SIP.10.X1, AR01.05.069.14_070726_735.PC20.10.VF). These are sold under the name "Vodafone Station" by Vodafone in Germany
 
 Inspired and based on [Connectbox Prometheus](https://github.com/mbugert/connectbox-prometheus) by [@mburgert](https://github.com/mbugert) (thanks!).
 For alternative access to your device see also [vodafone-station-cli](https://github.com/totev/vodafone-station-cli)
@@ -63,6 +63,9 @@ password: WhatEverYourPasswordIs
 # All following parameters are optional.
 exporter:
   do_not_remove_this_line:
+
+  # address to serve metrics on (default: "", all interfaces); 127.0.0.1 keeps them local
+  #listen_address: ""
 
   # port on which this exporter exposes metrics (default: 9706)
   #port: 9706

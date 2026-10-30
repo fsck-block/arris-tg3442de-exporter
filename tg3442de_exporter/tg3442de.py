@@ -24,6 +24,8 @@ class TG3442DE():
     def login(self):
         self.logger.debug("TG3442DE Logging in at " + self.ip_address)
         if self.simulate == False:
+            # the web UI sends this on every request; firmware 01.05.069.14 needs it for the login too
+            self.session.headers.update({"X-Requested-With": "XMLHttpRequest"})
             # get login page
             r = self.session.get(f"{self.url}",timeout=self.timeout)
             # parse HTML
@@ -35,14 +37,14 @@ class TG3442DE():
             salt = re.search(r".*var mySalt = '(.+)';.*",r.text)[1]
             key = hashlib.pbkdf2_hmac(
                 'sha256',
-                bytes(self.password.encode("ascii")),
+                bytes(self.password.encode("utf-8")),
                 binascii.unhexlify(salt),
                 iterations=1000,
                 dklen=16
             )
 
-            secret = { "Password": self.password, "Nonce": current_session_id }
-            plaintext = bytes(json.dumps(secret).encode("ascii"))
+            # build the plaintext like the web UI's JavaScript does (plain concatenation, no JSON escaping)
+            plaintext = ('{"Password": "' + self.password + '", "Nonce": "' + current_session_id + '"}').encode("utf-8")
             associated_data = "loginPassword"
             
             # initialize cipher
@@ -71,12 +73,15 @@ class TG3442DE():
             )
 
             # parse result
-            # success?
-            if r.text.find("AdminMatch") == -1:
-                self.logger.info("login failure")
-                return
-
-            result = json.loads(r.text)
+            # success? newer firmware does not always say "AdminMatch", so look for the encrypted nonce instead
+            try:
+                result = json.loads(r.text)
+            except ValueError:
+                result = {}
+            if 'encryptData' not in result:
+                # raise so the scrape reports the failure instead of exporting empty pages as success
+                raise ValueError(f"login failure: HTTP {r.status_code}, p_status={result.get('p_status')!r}")
+            self.logger.debug(f"login ok: p_status={result.get('p_status')!r}")
 
             # remember CSRF nonce
             encryptData = result['encryptData']
@@ -91,9 +96,12 @@ class TG3442DE():
                 "Origin": f"{self.url}/",
             })
 
-            # set credentials cookie
-            # TODO: get credentials from /base_95x.js'
- 
+            # set credentials cookie from /base_95x.js, as the web UI and vodafone-station-cli do
+            r = self.session.get(f"{self.url}/base_95x.js", timeout=self.timeout)
+            m = re.search(r'createCookie\(\s*"credential"\s*,\s*["\'](.*?)["\']', r.text, re.S)
+            if m:
+                self.session.cookies.set("credential", m[1])
+
             # set session
             r = self.session.post(f"{self.url}/php/ajaxSet_Session.php",timeout=self.timeout)
 
@@ -114,9 +122,9 @@ class TG3442DE():
         result = ''
         if self.simulate == False:
             r = self.session.get(f"{self.url}{page}",timeout=self.timeout)
-            if r != None:
-                if int(r.status_code) == 200:
-                    result = r.text
+            if int(r.status_code) != 200:
+                raise ValueError(f"HTTP {r.status_code} for {page}")
+            result = r.text
         else:
             partname = page[5:page.find('.php')]
             filename = f"simulate/{partname}.txt"

@@ -15,6 +15,7 @@ from tg3442de_exporter.event_log_local_extractor import EVENT_LOG_LOCAL
 IP_ADDRESS      = "ip_address"
 PASSWORD        = "password"
 EXPORTER        = "exporter"
+LISTEN_ADDRESS  = "listen_address"
 PORT            = "port"
 TIMEOUT_SECONDS = "timeout_seconds"
 EXTRACTORS      = "metrics"
@@ -25,6 +26,8 @@ SIMULATE        = "simulate"
 # pick default timeout one second less than the default prometheus timeout of 10s
 DEFAULT_CONFIG = {
     EXPORTER: {
+        # address to serve metrics on; "" means all interfaces, "127.0.0.1" keeps them on this machine
+        LISTEN_ADDRESS: "",
         PORT: 9706,
         TIMEOUT_SECONDS: 9,
         # EXTRACTORS: {DEVICE_STATUS, DOCSIS_STATUS, OVERVIEW_STATUS, PHONE_STATUS, CALL_LOG, CALL_LOG_LOCAL, EVENT_LOG_LOCAL },
